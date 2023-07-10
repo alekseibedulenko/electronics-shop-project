@@ -58,9 +58,11 @@ class Item:
         return int(float(value))
 
     @classmethod
-    def instantiate_from_csv(cls):
+    def instantiate_from_csv(cls,path="../src/items.csv"):
         cls.all.clear()
-        with open("../src/items.csv", "r", encoding="windows-1251") as file:
+        with open(path, "r", encoding="windows-1251") as file:
             file_reader = csv.DictReader(file)
             for row in file_reader:
                 cls(row["name"], cls.string_to_number(row["price"]), cls.string_to_number(row["quantity"]))
+
+
