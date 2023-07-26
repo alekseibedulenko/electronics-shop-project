@@ -1,5 +1,7 @@
 """Здесь надо написать тесты с использованием pytest для модуля item."""
 import pytest
+
+from src.instantiate_csv_error import InstantiateCSVError
 from src.item import Item
 import csv
 
@@ -40,6 +42,15 @@ def test_instantiate_from_csv(csv_path):
         for row in file_reader:
             item = Item(row['name'], int(float(row['price'])), int(float(row['quantity'])))
             assert item in Item.all
+
+def test_instantiate_from_csv_file_not_found():
+    with pytest.raises(FileNotFoundError):
+        Item.instantiate_from_csv("src/items.csv")
+
+
+def test_instantiate_from_csv_file_corrupted():
+    with pytest.raises(InstantiateCSVError):
+        Item.instantiate_from_csv("../src/failed_items.csv")
 
 
 

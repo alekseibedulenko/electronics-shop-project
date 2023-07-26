@@ -1,4 +1,8 @@
 import csv
+import os.path
+
+from src.instantiate_csv_error import InstantiateCSVError
+
 
 
 class Item:
@@ -59,10 +63,19 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls,path="../src/items.csv"):
-        cls.all.clear()
-        with open(path, "r", encoding="windows-1251") as file:
-            file_reader = csv.DictReader(file)
-            for row in file_reader:
-                cls(row["name"], cls.string_to_number(row["price"]), cls.string_to_number(row["quantity"]))
+        try:
+            if not os.path.exists(path):
+                raise FileNotFoundError(f"Файл {path.split('/')[-1]} не найден")
+            cls.all.clear()
+            with open(path, "r", encoding="windows-1251") as file:
+                file_reader = csv.DictReader(file)
+                for row in file_reader:
+                    if set(row)!= {"name","price","quantity"}:
+                        raise InstantiateCSVError(path)
+                    cls(row["name"], cls.string_to_number(row["price"]), cls.string_to_number(row["quantity"]))
+        except (FileNotFoundError, InstantiateCSVError) as e:
+            raise e
+
+
 
 
